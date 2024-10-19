@@ -1,6 +1,6 @@
----
-
 # DIY Deep Learning with Keras
+
+This repository contains a deep learning model for classifying images of cats and dogs using Keras and TensorFlow. The model is built using convolutional neural networks (CNNs) and can be trained and evaluated using a Streamlit interface.
 
 ## Model Architecture
 
@@ -116,4 +116,61 @@ graph TD;
 - **Usage**: Commonly used for classification problems to measure the model's performance.
 - **Example**: An accuracy of 90% means the model correctly classified 90% of the samples.
 
+## Usage
+
+### Training the Model
+
+1. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Run the Streamlit App**:
+   ```bash
+   streamlit run KerasTrainer.py
+   ```
+
+3. **Configure Training Parameters**:
+   - Set the training and testing data paths.
+   - Choose the learning rate, number of epochs, and batch size.
+
+4. **Train the Model**:
+   - Click the "Train Model" button to start training.
+   - Monitor the training progress and metrics in real-time.
+
+### Making Predictions
+
+1. **Load a Sample Image**:
+   - Provide the path to a sample image in the sidebar.
+
+2. **Predict**:
+   - Click the "Predict" button to classify the image.
+   - View the predicted class and probability.
+
+## Example
+
+### Training Example
+
+```python
+# Example of training configuration
+train_path = "dataset/training_set/training_set"
+test_path = "dataset/test_set/test_set"
+learning_rate = 0.001
+epochs = 10
+batch_size = 32
+```
+
+### Prediction Example
+
+```python
+# Example of prediction configuration
+sample_image_path = "images/dog1.jpg"
+```
+
 ---
+
+By understanding these components, you can better grasp how the model works and how to adjust it for different tasks or datasets. The visual representation using Mermaid helps to see the flow of data through the layers, making it easier to understand the architecture.
+
+Feel free to explore and modify the code to suit your needs! If you have any questions or suggestions, please open an issue or submit a pull request.
+
+Happy coding! 🚀
