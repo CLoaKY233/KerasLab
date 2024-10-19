@@ -3,3 +3,4 @@ pyrightconfig.json
 pyproject.toml
 images
 dataset
+dogcatclassifier.h5
