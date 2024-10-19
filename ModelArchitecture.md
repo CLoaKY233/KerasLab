@@ -1,3 +1,5 @@
+
+
 # DIY Deep Learning with Keras
 
 This repository contains a deep learning model for classifying images of cats and dogs using Keras and TensorFlow. The model is built using convolutional neural networks (CNNs) and can be trained and evaluated using a Streamlit interface.
@@ -6,18 +8,18 @@ This repository contains a deep learning model for classifying images of cats an
 
 ```mermaid
 graph TD;
-    A[Input Image (256x256x1)] --> B[Conv2D (64 filters, 3x3, ReLU, same padding)];
-    B --> C[MaxPooling2D (2x2)];
-    C --> D[Conv2D (128 filters, 3x3, ReLU, same padding)];
-    D --> E[MaxPooling2D (2x2)];
-    E --> F[Conv2D (256 filters, 3x3, ReLU, same padding)];
-    F --> G[MaxPooling2D (2x2)];
-    G --> H[Flatten];
-    H --> I[Dense (128 units, ReLU)];
-    I --> J[Dropout (50%)];
-    J --> K[Dense (64 units, ReLU)];
-    K --> L[Dense (1 unit, Sigmoid)];
-    L --> M[Output (Probability of being a Dog)];
+    A[Input Image 256x256x1] -->|Conv2D| B[64 filters, 3x3, ReLU, same padding];
+    B -->|MaxPooling2D| C[2x2];
+    C -->|Conv2D| D[128 filters, 3x3, ReLU, same padding];
+    D -->|MaxPooling2D| E[2x2];
+    E -->|Conv2D| F[256 filters, 3x3, ReLU, same padding];
+    F -->|MaxPooling2D| G[2x2];
+    G -->|Flatten| H;
+    H -->|Dense| I[128 units, ReLU];
+    I -->|Dropout| J[50%];
+    J -->|Dense| K[64 units, ReLU];
+    K -->|Dense| L[1 unit, Sigmoid];
+    L --> M[Output Probability of being a Dog];
 ```
 
 ## Detailed Explanation of Layers and Architecture
@@ -174,3 +176,5 @@ By understanding these components, you can better grasp how the model works and 
 Feel free to explore and modify the code to suit your needs! If you have any questions or suggestions, please open an issue or submit a pull request.
 
 Happy coding! 🚀
+
+---
