@@ -8,7 +8,7 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import Callback
-
+import plotly.graph_objects as go
 
 
 
@@ -104,6 +104,9 @@ def display_prediction(image_path, predicted_class, prediction):
     st.pyplot(plt)
 
 class StreamlitCallback(Callback):
+    """
+    Custom Keras callback to update Streamlit UI during training.
+    """
     def __init__(self, epochs, batch_size):
         super().__init__()
         self.epochs = epochs
@@ -111,13 +114,20 @@ class StreamlitCallback(Callback):
         self.progress_bar = st.progress(0)
         self.status_text = st.empty()
         self.epoch_progress = st.empty()
-        self.loss_chart = st.line_chart()
-        self.accuracy_chart = st.line_chart()
-        self.val_loss_chart = st.line_chart()
-        self.val_accuracy_chart = st.line_chart()
+        self.loss_chart = st.empty()
+        self.accuracy_chart = st.empty()
+        self.val_loss_chart = st.empty()
+        self.val_accuracy_chart = st.empty()
         self.history = {'loss': [], 'accuracy': [], 'val_loss': [], 'val_accuracy': []}
 
     def on_epoch_end(self, epoch, logs=None):
+        """
+        Update the Streamlit UI at the end of each epoch.
+
+        Args:
+            epoch (int): Current epoch number.
+            logs (dict): Dictionary of logs from the current epoch.
+        """
         self.progress_bar.progress((epoch + 1) / self.epochs)
         self.status_text.text(f"Epoch {epoch + 1}/{self.epochs}")
         self.epoch_progress.text(f"Loss: {logs['loss']:.4f}, Accuracy: {logs['accuracy']:.4f}, "
@@ -130,10 +140,28 @@ class StreamlitCallback(Callback):
         self.history['val_accuracy'].append(logs['val_accuracy'])
 
         # Update charts
-        self.loss_chart.add_rows([logs['loss']])
-        self.accuracy_chart.add_rows([logs['accuracy']])
-        self.val_loss_chart.add_rows([logs['val_loss']])
-        self.val_accuracy_chart.add_rows([logs['val_accuracy']])
+        self.update_charts()
+
+    def update_charts(self):
+        """
+        Update the charts with the latest training metrics.
+        """
+        epochs = list(range(1, len(self.history['loss']) + 1))
+
+        # Loss chart
+        loss_fig = go.Figure()
+        loss_fig.add_trace(go.Scatter(x=epochs, y=self.history['loss'], mode='lines+markers', name='Loss'))
+        loss_fig.add_trace(go.Scatter(x=epochs, y=self.history['val_loss'], mode='lines+markers', name='Val Loss'))
+        loss_fig.update_layout(title='Loss per Epoch', xaxis_title='Epoch', yaxis_title='Loss')
+        self.loss_chart.plotly_chart(loss_fig)
+
+        # Accuracy chart
+        accuracy_fig = go.Figure()
+        accuracy_fig.add_trace(go.Scatter(x=epochs, y=self.history['accuracy'], mode='lines+markers', name='Accuracy'))
+        accuracy_fig.add_trace(go.Scatter(x=epochs, y=self.history['val_accuracy'], mode='lines+markers', name='Val Accuracy'))
+        accuracy_fig.update_layout(title='Accuracy per Epoch', xaxis_title='Epoch', yaxis_title='Accuracy')
+        self.accuracy_chart.plotly_chart(accuracy_fig)
+
 
 def main():
     # Set wide mode by default
@@ -170,7 +198,7 @@ def main():
             st.subheader("Training Parameters")
             col1, col2 = st.columns(2)
             with col1:
-                learning_rate = st.radio("Learning Rate", [0.0001, 0.001, 0.01])
+                learning_rate = st.selectbox("Learning Rate", [0.0001, 0.001, 0.01])
             with col2:
                 epochs = st.slider("Epochs", 1, 50, 5)
                 batch_size = st.slider("Batch Size", 16, 128, 32)
@@ -228,6 +256,7 @@ def main():
                 prediction = model.predict(preprocess_image(sample_image_path))
                 predicted_class = CLASSES[round(prediction[0][0])]
                 display_prediction(sample_image_path, predicted_class, prediction)
+
 
 if __name__ == "__main__":
     main()
