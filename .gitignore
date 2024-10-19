@@ -4,7 +4,6 @@ pyproject.toml
 images
 dataset
 dogcatclassifier.h5
-.streamlit
 microservicesarch
 temp_cat1.jpeg
 dogcatclassifier.onnx
