@@ -2,6 +2,10 @@
 
 This project is a deep learning application that classifies images of cats and dogs using a Convolutional Neural Network (CNN) built with TensorFlow and Keras. The application features a Streamlit-based user interface for training the model, visualizing the training process, and making predictions.
 
+---
+To Learn more about the project, click [Here](LearnWithPrompts.md)
+
+
 ## Table of Contents
 
 - [Features](#features)

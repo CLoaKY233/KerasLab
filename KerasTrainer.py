@@ -3,20 +3,33 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
-from tensorflow import keras
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import Callback
 import plotly.graph_objects as go
 
-
-
 # Constants
 IMG_SIZE = 256
 CLASSES = {0: "Dog", 1: "Cat"}
 
 def load_data(path):
+    """
+    Load and preprocess image data from the specified directory.
+
+    This function reads images from the given directory, processes them, and returns
+    the images and their corresponding labels as numpy arrays. The images are resized
+    to a fixed size and converted to grayscale.
+
+    Args:
+        path (str): Path to the dataset directory. The directory should contain two
+                    subdirectories named 'cats' and 'dogs', each containing the respective images.
+
+    Returns:
+        tuple: Tuple containing two numpy arrays:
+               - x (numpy.ndarray): Array of processed images.
+               - y (numpy.ndarray): Array of corresponding labels (0 for dogs, 1 for cats).
+    """
     x_dataset = []
     y_dataset = []
 
@@ -38,6 +51,18 @@ def load_data(path):
     return x[indices], y[indices]
 
 def process_image(img_path, x_dataset, y_dataset, label):
+    """
+    Process a single image and append it to the dataset.
+
+    This function reads an image from the given path, resizes it to a fixed size,
+    converts it to grayscale, and appends it to the dataset along with its label.
+
+    Args:
+        img_path (str): Path to the image file.
+        x_dataset (list): List to store image data.
+        y_dataset (list): List to store image labels.
+        label (int): Label for the image (0 for dog, 1 for cat).
+    """
     try:
         img_arr = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
         img_arr = cv2.resize(img_arr, (IMG_SIZE, IMG_SIZE))
@@ -47,6 +72,18 @@ def process_image(img_path, x_dataset, y_dataset, label):
         print(f"{img_path} was not added. Error: {e}")
 
 def create_model(learning_rate):
+    """
+    Create and compile a Convolutional Neural Network model.
+
+    This function defines the architecture of the CNN model, compiles it with the
+    specified learning rate, and returns the compiled model.
+
+    Args:
+        learning_rate (float): Learning rate for the optimizer.
+
+    Returns:
+        keras.models.Sequential: Compiled CNN model.
+    """
     model = Sequential([
         Conv2D(64, (3,3), activation='relu', input_shape=(IMG_SIZE, IMG_SIZE, 1), padding='same'),
         MaxPooling2D(pool_size=(2,2)),
@@ -68,6 +105,15 @@ def create_model(learning_rate):
     return model
 
 def plot_training_history(history):
+    """
+    Plot the training history of the model.
+
+    This function creates two subplots: one for the accuracy and one for the loss
+    during training and validation. It then displays these plots using Streamlit.
+
+    Args:
+        history (keras.callbacks.History): History object returned by the fit method.
+    """
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
 
     ax1.plot(history.history['accuracy'], label='Training Accuracy')
@@ -87,6 +133,19 @@ def plot_training_history(history):
     st.pyplot(fig)
 
 def preprocess_image(image_path):
+    """
+    Preprocess a single image for prediction.
+
+    This function reads an image from the given path, resizes it to a fixed size,
+    converts it to grayscale, normalizes the pixel values, and reshapes it to the
+    required input shape for the model.
+
+    Args:
+        image_path (str): Path to the image file.
+
+    Returns:
+        numpy.ndarray: Preprocessed image array.
+    """
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     if image is None:
         raise ValueError("Image not found or unable to open.")
@@ -95,6 +154,17 @@ def preprocess_image(image_path):
     return np.reshape(image, (1, IMG_SIZE, IMG_SIZE, 1))
 
 def display_prediction(image_path, predicted_class, prediction):
+    """
+    Display the prediction result for a single image.
+
+    This function reads an image from the given path, displays it using matplotlib,
+    and overlays the predicted class and probability on the image.
+
+    Args:
+        image_path (str): Path to the image file.
+        predicted_class (str): Predicted class label.
+        prediction (numpy.ndarray): Prediction probability.
+    """
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     if image is None:
         raise ValueError("Image not found or unable to open.")
@@ -106,6 +176,14 @@ def display_prediction(image_path, predicted_class, prediction):
 class StreamlitCallback(Callback):
     """
     Custom Keras callback to update Streamlit UI during training.
+
+    This class defines a custom callback that updates the Streamlit UI with the
+    training progress, including the current epoch, loss, accuracy, and validation
+    metrics. It also updates real-time charts for loss and accuracy.
+
+    Args:
+        epochs (int): Total number of epochs for training.
+        batch_size (int): Batch size for training.
     """
     def __init__(self, epochs, batch_size):
         super().__init__()
@@ -123,6 +201,10 @@ class StreamlitCallback(Callback):
     def on_epoch_end(self, epoch, logs=None):
         """
         Update the Streamlit UI at the end of each epoch.
+
+        This method updates the progress bar, status text, and epoch progress text
+        with the current training metrics. It also updates the history of loss and
+        accuracy for both training and validation, and refreshes the charts.
 
         Args:
             epoch (int): Current epoch number.
@@ -145,6 +227,9 @@ class StreamlitCallback(Callback):
     def update_charts(self):
         """
         Update the charts with the latest training metrics.
+
+        This method creates and updates Plotly charts for loss and accuracy using
+        the history of training and validation metrics.
         """
         epochs = list(range(1, len(self.history['loss']) + 1))
 
@@ -162,8 +247,14 @@ class StreamlitCallback(Callback):
         accuracy_fig.update_layout(title='Accuracy per Epoch', xaxis_title='Epoch', yaxis_title='Accuracy')
         self.accuracy_chart.plotly_chart(accuracy_fig)
 
-
 def main():
+    """
+    Main function to run the Streamlit app.
+
+    This function sets up the Streamlit UI, including the configuration and training
+    sections. It allows users to specify data paths, training parameters, and start
+    the training process. It also includes a section for making predictions on new images.
+    """
     # Set wide mode by default
     st.set_page_config(layout="wide")
 
@@ -256,7 +347,6 @@ def main():
                 prediction = model.predict(preprocess_image(sample_image_path))
                 predicted_class = CLASSES[round(prediction[0][0])]
                 display_prediction(sample_image_path, predicted_class, prediction)
-
 
 if __name__ == "__main__":
     main()
