@@ -28,7 +28,7 @@ To Learn more about the project, click [Here](LearnWithPrompts.md)
 1. Clone the repository:
    ```
    git clone https://github.com/cloaky233/KerasLab.git
-   cd cats-and-dogs-classifier
+   cd KerasLab
    ```
 
 2. Install `uv` for dependency management:
@@ -57,7 +57,7 @@ To Learn more about the project, click [Here](LearnWithPrompts.md)
 
 2. Run the Streamlit app:
    ```
-   streamlit run KerasTrainer.py
+   streamlit run app.py
    ```
 
 3. Use the Streamlit interface to:
@@ -69,7 +69,8 @@ To Learn more about the project, click [Here](LearnWithPrompts.md)
 
 ## Code Structure
 
-The main script `KerasTrainer.py` is organized into several sections:
+The main script `app.py` is organized into several sections:
+(now kept in pyfiles directory)
 
 1. **Imports and Constants**: Required libraries and global variables.
 2. **Data Loading and Preprocessing**: Functions to load and prepare image data.

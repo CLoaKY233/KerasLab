@@ -36,7 +36,14 @@ The Cats and Dogs Classifier is a deep learning project that aims to classify im
 │       └── dogs
 ├── images
 │   └── sample_image.jpg
-├── KerasTrainer.py
+├── pyfiles
+│   ├── callbacks
+│   ├── constants
+│   ├── data_loader
+│   ├── model
+│   ├── visualization
+│   └── preprocessing
+│
 └── README.md
 ```
 
@@ -55,7 +62,7 @@ The Cats and Dogs Classifier is a deep learning project that aims to classify im
 
 3. Run the Streamlit app:
    ```bash
-   streamlit run kerastrainer.py
+   streamlit run app.py
    ```
 
 ## Usage
